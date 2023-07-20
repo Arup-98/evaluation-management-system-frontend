@@ -1,0 +1,15 @@
+.sidebar {
+    background-color: #f0f0f0;
+    padding: 20px;
+    margin-right: 85%;
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  }
+  
+  @media (max-width: 768px) {
+    /* Adjust styles for smaller screens */
+    .sidebar {
+      padding: 10px;
+    }
+}
