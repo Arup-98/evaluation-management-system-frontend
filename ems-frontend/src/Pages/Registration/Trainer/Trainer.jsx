@@ -186,7 +186,7 @@ const Trainer = () => {
           {/* Add more Form.Group components for the rest of the properties */}
           {/* ... */}
 
-          <Button className='traineeButton' variant="primary" type="submit">
+          <Button className='traineeButton' variant="success" type="submit">
             Register
           </Button>
         </Form>

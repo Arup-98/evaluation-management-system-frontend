@@ -206,7 +206,7 @@ const Trainee = () => {
             </Col>
           </Row>
 
-          <Button className='traineeButton' variant="primary" type="submit">
+          <Button className='traineeButton' variant="success" type="submit">
             Register
           </Button>
         </Form>

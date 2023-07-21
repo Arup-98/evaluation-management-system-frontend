@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Button, Container } from 'react-bootstrap';
 import axios from 'axios';
 import { HashLink } from 'react-router-hash-link';
+import './AllBatch.css'
 
 const AllBatch = () => {
   const [batches, setBatches] = useState([]);
@@ -24,8 +25,9 @@ const AllBatch = () => {
 
   return (
     <>
-      <h5 className='allBatchTitle pt-3 pt-4'>Batch Details</h5>
+      
       <Container>
+      <h5 className='allBatchTitle pt-3 pt-4'>Batch Details</h5>
         <Row xs={1} md={3} className="g-4 p-5">
           {batches.map((batch) => (
             <Col key={batch.id}>

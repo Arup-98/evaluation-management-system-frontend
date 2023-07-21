@@ -102,7 +102,7 @@ const Batch = () => {
 
         {batch && trainees.length > 0 && (
           <>
-            <h4>Trainees in Batch: {batch.batchName}</h4>
+            <h5>Trainees in Batch: {batch.batchName}</h5>
             <Table striped bordered hover>
               <thead>
                 <tr>

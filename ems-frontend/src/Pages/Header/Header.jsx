@@ -23,6 +23,9 @@ const Header = () => {
               <Nav.Link className='text-black'as={HashLink} to="/allBatch">All Batch</Nav.Link>
               <Nav.Link className='text-black'as={HashLink} to="/createBatch">Batch Create</Nav.Link>
               <Nav.Link className='text-black'as={HashLink} to="/task">Task Create</Nav.Link>
+              <Nav.Link className='text-black'as={HashLink} to="/taskEvaluation">Task Evaluation</Nav.Link>
+              <Nav.Link className='text-black'as={HashLink} to="/managerEvaluation">Manager Evaluation</Nav.Link>
+              <Nav.Link className='text-black'as={HashLink} to="/CEOEvaluation">CEO Evaluation</Nav.Link>
               {/* <Nav.Link className='text-black'as={HashLink} to="/viewTask">View Task</Nav.Link> */}
             </Nav>
             <Nav>

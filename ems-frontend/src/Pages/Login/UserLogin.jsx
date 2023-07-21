@@ -81,7 +81,7 @@ const UserLogin = () => {
                 />
               </Form.Group>
 
-              <Button className="loginButton"variant="primary" type="submit">
+              <Button className="loginButton"variant="success" type="submit">
                 Login
               </Button>
             </Form>

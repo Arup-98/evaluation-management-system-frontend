@@ -61,7 +61,7 @@ const BatchCreate = () => {
       </Toast>
       <div className='batchCreateForm'>
         <Form className="batchCreate" onSubmit={handleSubmit}>
-        <h6 className="titleName mb-4 text-center font-weight-bold text-success">Batch Create</h6>
+        <h6 className="titleName mb-4  font-weight-bold ">Batch Create</h6>
        <Form.Group controlId="batchName">
           <Form.Label>Batch Name</Form.Label>
           <Form.Control

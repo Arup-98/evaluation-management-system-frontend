@@ -107,7 +107,7 @@ const TaskCreate = () => {
                 ))}
               </Form.Control>
             </Form.Group>
-            <Button className='taskCreateButton' variant="primary" type="submit">
+            <Button className='taskCreateButton' variant="success" type="submit">
               Submit
             </Button>
           </Form>
