@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Container, Row, Col, Button, Modal, Table } from 'react-bootstrap';
-import { useParams, useNavigate, NavLink } from 'react-router-dom';
-import { HashLink } from 'react-router-hash-link';
-import ViewTasks from '../../Task/ViewTasks';
+import { Container, Button, Table, Modal } from 'react-bootstrap';
+import { useParams, NavLink } from 'react-router-dom';
+import TraineeProfile from '../../Trainee/TraineeProfile/TraineeProfile'; // Adjust the path based on your project structure
+
 import './Batch.css';
+import { HashLink } from 'react-router-hash-link';
 
 const Batch = () => {
   const { batchId } = useParams();
-  const navigate = useNavigate();
   const [batch, setBatch] = useState(null);
   const [trainees, setTrainees] = useState([]);
   const [selectedTrainees, setSelectedTrainees] = useState([]);
@@ -63,16 +63,15 @@ const Batch = () => {
       <Container>
         {batch && (
           <>
-          <div className='assignTraineeButton'>
-            <Button className="assignButton" variant="primary" onClick={() => setShowModal(true)}>
-              Assign Trainees
-            </Button>
-            
+            <div className='assignTraineeButton'>
+              <Button className="assignButton" variant="primary" onClick={() => setShowModal(true)}>
+                Assign Trainees
+              </Button>
 
-            {/* Button to navigate to the tasks page */}
-            <NavLink to={`/viewTask/${batch.id}`}>
-              <Button variant="success">View Tasks</Button>
-            </NavLink>
+              {/* Button to navigate to the tasks page */}
+              <NavLink to={`/viewTask/${batch.id}`}>
+                <Button variant="success">View Tasks</Button>
+              </NavLink>
             </div>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -115,7 +114,10 @@ const Batch = () => {
               <tbody>
                 {trainees.map((trainee) => (
                   <tr key={trainee.id}>
-                    <td>{trainee.fullName}</td>
+                    <td>
+                      {/* Use NavLink to navigate to the trainee profile */}
+                      <HashLink to={`/traineeProfile/${trainee.id}`}>{trainee.fullName}</HashLink>
+                    </td>
                     <td>{trainee.email}</td>
                     <td>{trainee.contactNumber}</td>
                     <td>{trainee.presentAddress}</td>
