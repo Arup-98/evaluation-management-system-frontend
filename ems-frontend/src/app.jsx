@@ -1,5 +1,3 @@
-
-
 import { Route, Routes, useParams } from 'react-router-dom'
 import AllBatch from './Pages/Batch/AllBatches/AllBatch'
 import BatchCreate from './Pages/Batch/BatchCreate/BatchCreate'
@@ -20,16 +18,26 @@ import ViewTrainer from './Pages/Registration/Trainer/ViewTrainer'
 import ShowMarks from './Pages/Evaluation/ShowMarks/ShowMarks'
 import ViewManagerEvaluationMarks from './Pages/Evaluation/ViewManagerEvaluationMarks/ViewManagerEvaluationMarks'
 import ViewCEOEvaluationMarks from './Pages/Evaluation/ViewCEOEvaluationMarks/ViewCEOEvaluationMarks'
+import FinalScore from './Pages/Evaluation/FinalScore/FinalScore'
+import Logout from './Pages/LogOut/LogOut'
+import ViewSubmission from './Pages/ViewSubmission/ViewSubmission'
+
+
 
 
 export function App() {
+  const fullName = localStorage.getItem('fullName');
+  const role = localStorage.getItem('role');
+  const userId = localStorage.getItem('userId');
+
+  
   return (
     <>
     
 
-     <Header></Header>
+     <Header fullName={fullName} role={role}/>
          <Routes >
-            <Route path="/" element={<UserLogin></UserLogin>}></Route>
+            <Route path="/login" element={<UserLogin></UserLogin>}></Route>
             <Route path="/home" element={<Home></Home>}></Route>
             <Route path="/createBatch" element={<BatchCreate></BatchCreate>}></Route>
             <Route path="/allBatch" element={<AllBatch></AllBatch>}></Route>
@@ -38,7 +46,7 @@ export function App() {
             <Route path="/trainerRegister" element={<Trainer></Trainer>}></Route>
             <Route path="/traineeProfile/:traineeId" element={<TraineeProfile></TraineeProfile>}></Route>
             <Route path="/task" element={<TaskCreate></TaskCreate>}></Route>
-            <Route path="/viewTask/:batchId" element={<ViewTasks></ViewTasks>}></Route>
+            <Route path="/viewTask/:batchId" element={<ViewTasks fullName={fullName} userId={userId}/>}></Route>
             <Route path="/taskEvaluation" element={<TaskEvaluation />} />
             <Route path="/taskEvaluation/:batchId" element={<TaskEvaluation />} />
             <Route path="/managerEvaluation" element={<ManagerEvaluation></ManagerEvaluation>}></Route>
@@ -49,8 +57,9 @@ export function App() {
             <Route path="/showMarks" element={<ShowMarks></ShowMarks>}></Route>
             <Route path="/managerEvaluationAllMarks" element={<ViewManagerEvaluationMarks></ViewManagerEvaluationMarks>}></Route>
             <Route path="/CEOEvaluationAllMarks" element={<ViewCEOEvaluationMarks></ViewCEOEvaluationMarks>}></Route>
-
-
+            <Route path="/finalScoreCreate" element={<FinalScore></FinalScore>}></Route>
+            <Route path="/logout" element={<Logout></Logout>}></Route>
+            <Route path="/viewSubmissions" element={<ViewSubmission></ViewSubmission>}></Route>
 
           </Routes>
       
@@ -60,5 +69,4 @@ export function App() {
     </>
   )
 }
-
 
