@@ -26,17 +26,24 @@ const UserLogin = () => {
     axios
       .post('http://localhost:8088/user/login', formData)
       .then((response) => {
+        console.log( response.data);
         // Extract specific user information from the response
-        const { userId, fullName, email, role, authority } = response.data.user;
-
+        const { email, id,role, authority } = response.data.user;
+        
         // Store specific user information in localStorage (if needed)
-        localStorage.setItem('userId', userId);
-      
-        localStorage.setItem('fullName', fullName);
+        localStorage.setItem('userId',id);
+        
         localStorage.setItem('email', email);
         localStorage.setItem('role', role);
+        console.log(localStorage.getItem('userId'));
         localStorage.setItem('authority', authority);
-
+        if (role === 'Trainee') {
+          const {fullName,id} = response.data.trainee;
+          localStorage.setItem('id', id);
+          localStorage.setItem('fullName', fullName);
+        }
+        
+       
         // Set the JWT token in an HttpOnly cookie
         document.cookie = `token=${response.data.token}; path=/; HttpOnly`;
         
@@ -44,13 +51,14 @@ const UserLogin = () => {
         setShowErrorMessage(false); // Hide error message
 
         navigate('/home');
-        console.log(userId); // Redirect the user to the home page after successful login
+        // Redirect the user to the home page after successful login
       })
       .catch((error) => {
         setShowErrorMessage(true); // Show error message
         setShowSuccessMessage(false); // Hide success message
         // Handle error if login fails
       });
+      
       
 
   };

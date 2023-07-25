@@ -73,21 +73,71 @@ const TaskEvaluation = () => {
 
   const handleTaskSubmit = (traineeId) => {
     const taskEvaluation = taskEvaluations.find((te) => te.traineeId === traineeId);
-    if (
-      !taskEvaluation ||
-      !taskEvaluation.taskId ||
-      !taskEvaluation.taskType ||
-      !isValidNumber(taskEvaluation.requirementUnderstanding) ||
-      !isValidNumber(taskEvaluation.expectedOutput) ||
-      !isValidNumber(taskEvaluation.codeQuality) ||
-      !isValidNumber(taskEvaluation.demonstration) ||
-      !isValidNumber(taskEvaluation.codeUnderstanding)
-    ) {
+    if (!taskEvaluation) {
+      return;
+    }
+
+    const taskType = taskEvaluation.taskType;
+    const requirementUnderstanding = parseFloat(taskEvaluation.requirementUnderstanding);
+    const expectedOutput = parseFloat(taskEvaluation.expectedOutput);
+    const codeQuality = parseFloat(taskEvaluation.codeQuality);
+    const demonstration = parseFloat(taskEvaluation.demonstration);
+    const codeUnderstanding = parseFloat(taskEvaluation.codeUnderstanding);
+
+    let isValid = true;
+    let errorMessage = '';
+
+    if (!taskType) {
+      errorMessage += 'Please select a task type.\n';
+      isValid = false;
+    }
+
+    if (taskType === 'Daily Task' && (requirementUnderstanding > 2 || expectedOutput > 2)) {
+      errorMessage += 'For Daily Task, requirement understanding and expected output cannot be more than 2.\n';
+      isValid = false;
+    } else if (taskType === 'Mini Project' && (requirementUnderstanding > 10 || expectedOutput > 10)) {
+      errorMessage += 'For Mini Project, requirement understanding and expected output cannot be more than 10.\n';
+      isValid = false;
+    } else if (taskType === 'Mid Project' && (requirementUnderstanding > 10 || expectedOutput > 10)) {
+      errorMessage += 'For Mid Project, requirement understanding and expected output cannot be more than 10.\n';
+      isValid = false;
+    } else if (taskType === 'Final Project' && (requirementUnderstanding > 20 || expectedOutput > 20)) {
+      errorMessage += 'For Final Project, requirement understanding and expected output cannot be more than 20.\n';
+      isValid = false;
+    }
+
+    if (!isValidNumber(requirementUnderstanding) || requirementUnderstanding < 0 || requirementUnderstanding > 100) {
+      errorMessage += 'Please enter a valid requirement understanding score (0-100).\n';
+      isValid = false;
+    }
+
+    if (!isValidNumber(expectedOutput) || expectedOutput < 0 || expectedOutput > 100) {
+      errorMessage += 'Please enter a valid expected output score (0-100).\n';
+      isValid = false;
+    }
+
+    if (!isValidNumber(codeQuality) || codeQuality < 0 || codeQuality > 100) {
+      errorMessage += 'Please enter a valid code quality score (0-100).\n';
+      isValid = false;
+    }
+
+    if (!isValidNumber(demonstration) || demonstration < 0 || demonstration > 100) {
+      errorMessage += 'Please enter a valid demonstration score (0-100).\n';
+      isValid = false;
+    }
+
+    if (!isValidNumber(codeUnderstanding) || codeUnderstanding < 0 || codeUnderstanding > 100) {
+      errorMessage += 'Please enter a valid code understanding score (0-100).\n';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      alert(errorMessage); // Display the error message to the user
       return;
     }
 
     axios
-      .post('http://localhost:8088/taskEvaluation/upload', taskEvaluation)
+      .post('http://localhost:8088/taskEvaluation/marks/upload', taskEvaluation)
       .then((response) => {
         setShowSuccessMessage(true);
         setTaskEvaluations((prevEvaluations) =>

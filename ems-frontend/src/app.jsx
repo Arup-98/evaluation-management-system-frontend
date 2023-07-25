@@ -28,25 +28,27 @@ import ViewSubmission from './Pages/ViewSubmission/ViewSubmission'
 export function App() {
   const fullName = localStorage.getItem('fullName');
   const role = localStorage.getItem('role');
-  const userId = localStorage.getItem('userId');
+  
+  const traineeId = localStorage.getItem('id');
+  
 
   
   return (
     <>
     
 
-     <Header fullName={fullName} role={role}/>
+     <Header fullName={fullName} role={role} traineeId={traineeId}/>
          <Routes >
             <Route path="/login" element={<UserLogin></UserLogin>}></Route>
             <Route path="/home" element={<Home></Home>}></Route>
             <Route path="/createBatch" element={<BatchCreate></BatchCreate>}></Route>
-            <Route path="/allBatch" element={<AllBatch></AllBatch>}></Route>
-            <Route path="/batch/:batchId" element={<Batch></Batch>}></Route>
+            <Route path="/allBatch" element={<AllBatch traineeId={traineeId} role={role}/>}></Route>
+            <Route path="/batch/:batchId" element={<Batch role={role}/>}></Route>
             <Route path="/traineeRegister" element={<Trainee></Trainee>}></Route>
             <Route path="/trainerRegister" element={<Trainer></Trainer>}></Route>
             <Route path="/traineeProfile/:traineeId" element={<TraineeProfile></TraineeProfile>}></Route>
             <Route path="/task" element={<TaskCreate></TaskCreate>}></Route>
-            <Route path="/viewTask/:batchId" element={<ViewTasks fullName={fullName} userId={userId}/>}></Route>
+            <Route path="/viewTask/:batchId" element={<ViewTasks fullName={fullName} traineeId={traineeId} role={role}/>}></Route>
             <Route path="/taskEvaluation" element={<TaskEvaluation />} />
             <Route path="/taskEvaluation/:batchId" element={<TaskEvaluation />} />
             <Route path="/managerEvaluation" element={<ManagerEvaluation></ManagerEvaluation>}></Route>

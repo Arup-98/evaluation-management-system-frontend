@@ -7,12 +7,14 @@ const Logout = () => {
 
   const handleLogout = () => {
     // Clear user information from localStorage
-    localStorage.removeItem('userId');
+    
     localStorage.removeItem('fullName');
     localStorage.removeItem('email');
     localStorage.removeItem('role');
+    localStorage.removeItem('userId');
     localStorage.removeItem('authority');
-
+    localStorage.removeItem('fullName');
+    localStorage.removeItem('id');
     // Clear the JWT token from the HttpOnly cookie
     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 

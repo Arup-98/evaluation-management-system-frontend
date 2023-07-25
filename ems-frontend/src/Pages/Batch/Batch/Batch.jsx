@@ -3,33 +3,40 @@ import axios from 'axios';
 import { Container, Button, Table, Modal } from 'react-bootstrap';
 import { useParams, NavLink } from 'react-router-dom';
 import TraineeProfile from '../../Trainee/TraineeProfile/TraineeProfile'; // Adjust the path based on your project structure
-
 import './Batch.css';
 import { HashLink } from 'react-router-hash-link';
 
-const Batch = () => {
+const Batch = ({ role }) => {
   const { batchId } = useParams();
   const [batch, setBatch] = useState(null);
   const [trainees, setTrainees] = useState([]);
   const [selectedTrainees, setSelectedTrainees] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [unassignedTrainees, setUnassignedTrainees] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8088/batch/allBatches`)
+      .get(`http://localhost:8088/batch/${batchId}`)
       .then((response) => {
-        const selectedBatch = response.data.find((b) => b.id === parseInt(batchId));
-        setBatch(selectedBatch);
-
-        if (selectedBatch) {
-          setTrainees(selectedBatch.trainees || []);
-        }
+        setBatch(response.data);
+        setTrainees(response.data.trainees || []);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [batchId]);
+
+    axios
+      .get(`http://localhost:8088/viewTrainees`)
+      .then((response) => {
+        const allTrainees = response.data;
+        const unassigned = allTrainees.filter((trainee) => !trainees.some((assigned) => assigned.id === trainee.id));
+        setUnassignedTrainees(unassigned);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [batchId, trainees]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -39,7 +46,8 @@ const Batch = () => {
       .then((response) => {
         setShowModal(false);
         setSelectedTrainees([]);
-        setTrainees(trainees.filter((trainee) => !selectedTrainees.includes(trainee.id)));
+        setTrainees(trainees.concat(unassignedTrainees.filter((trainee) => selectedTrainees.includes(trainee.id))));
+        setUnassignedTrainees(unassignedTrainees.filter((trainee) => !selectedTrainees.includes(trainee.id)));
         setShowMessage(true);
         setTimeout(() => {
           setShowMessage(false);
@@ -64,23 +72,28 @@ const Batch = () => {
         {batch && (
           <>
             <div className='assignTraineeButton'>
-              <Button className="assignButton" variant="primary" onClick={() => setShowModal(true)}>
-                Assign Trainees
-              </Button>
-
+              {role !== 'Trainee' && (
+                <Button className="assignButton" variant="primary" onClick={() => setShowModal(true)}>
+                  Assign Trainees
+                </Button>
+              )}
               {/* Button to navigate to the tasks page */}
               <NavLink to={`/viewTask/${batch.id}`}>
                 <Button variant="success">View Tasks</Button>
               </NavLink>
+
+              {/* Rest of the code remains the same... */}
             </div>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
               <Modal.Header closeButton>
-                <Modal.Title><h6>Assign Trainees to Batch: {batch.batchName}</h6></Modal.Title>
+                <Modal.Title>
+                  <h6>Assign Trainees to Batch: {batch.batchName}</h6>
+                </Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <form onSubmit={handleSubmit}>
-                  {trainees.map((trainee) => (
+                  {unassignedTrainees.map((trainee) => (
                     <div key={trainee.id}>
                       <input
                         type="checkbox"
@@ -101,7 +114,8 @@ const Batch = () => {
 
         {batch && trainees.length > 0 && (
           <>
-            <h5>Trainees in Batch: {batch.batchName}</h5>
+            <>
+            <h5>Trainees in Batch: {batch.batchName} Total: {trainees.length}</h5>
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -125,6 +139,7 @@ const Batch = () => {
                 ))}
               </tbody>
             </Table>
+          </>
           </>
         )}
 

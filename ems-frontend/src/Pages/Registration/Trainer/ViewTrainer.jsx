@@ -17,6 +17,10 @@ const ViewTrainer = () => {
         console.error(error);
       });
   }, []);
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString(); // Change the format as needed
+  };
 
   return (
     <div class="page-content page-container" id="page-content">
@@ -74,7 +78,7 @@ const ViewTrainer = () => {
                           </div>
                           <div class="col-sm-6">
                             <p class="m-b-10 f-w-600">Joining Date</p>
-                            <h6 class="text-muted f-w-400">{trainer.joiningDate}</h6>
+                            <h6 class="text-muted f-w-400">{formatDate(trainer.joiningDate)}</h6>
                           </div>
                         </div>
                       

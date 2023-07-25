@@ -9,7 +9,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { HashLink } from 'react-router-hash-link';
 
-function Header({ fullName, role }) {
+function Header({ fullName, role ,traineeId}) {
+ 
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -112,8 +113,7 @@ function Header({ fullName, role }) {
            
             <Nav.Link href="#deets">{fullName}</Nav.Link>
             <NavDropdown title={role} id="collasible-nav-dropdown" className="header">
-              <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Notification</NavDropdown.Item>
+            
               {/* <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item> */}
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>

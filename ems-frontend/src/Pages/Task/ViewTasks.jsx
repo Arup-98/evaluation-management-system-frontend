@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Container, Row, Col, Button, Modal, Table } from 'react-bootstrap';
+import { Card, Container, Row, Col, Button, Modal, Table, Form, Alert } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import './Task.css'
+import './Task.css';
 
-const ViewTasks = ({ fullName, userId }) => {
-  console.log(fullName);
-  console.log(userId);
+const ViewTasks = ({ fullName, traineeId,role }) => {
   const { batchId } = useParams();
   const [tasks, setTasks] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [taskSubmissions, setTaskSubmissions] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   useEffect(() => {
-    console.log(batchId);
     const batchNumber = parseInt(batchId);
-    console.log(batchNumber);
     axios
       .get(`http://localhost:8088/task/batch/${batchNumber}`)
       .then((response) => {
@@ -27,16 +27,10 @@ const ViewTasks = ({ fullName, userId }) => {
       });
   }, [batchId]);
 
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString(); // Convert the timestamp to a human-readable date format
-  };
-
   const handleViewSubmission = (taskId) => {
     setSelectedTaskId(taskId);
-    setShowModal(true);
+    setShowViewModal(true);
 
-    // Fetch task submissions
     axios
       .get(`http://localhost:8088/tasks/submission/${taskId}`)
       .then((response) => {
@@ -47,14 +41,62 @@ const ViewTasks = ({ fullName, userId }) => {
       });
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleCloseViewModal = () => {
+    setShowViewModal(false);
+  };
+
+  const handleTaskSubmission = (taskId) => {
+    setSelectedTaskId(taskId);
+    setShowSubmitModal(true);
+  };
+
+  const handleCloseSubmitModal = () => {
+    setShowSubmitModal(false);
+    setSelectedTask(null); // Reset the selected task after the modal is closed
+    setSubmitSuccess(false); // Reset the success message state
+    setSubmitError(false); // Reset the error message state
+  };
+
+  const handleTaskSubmit = (e) => {
+    e.preventDefault();
+
+    const { date, filename,role } = selectedTask;
+    
+
+    const taskSubmission = {
+      traineeId,
+      date,
+      filename,
+      role,
+      taskId: selectedTaskId,
+    };
+
+    axios
+      .post(`http://localhost:8088/tasks/submit/${parseInt(selectedTaskId)}`, taskSubmission)
+      .then((response) => {
+        console.log('Task submitted successfully!', response);
+        setSubmitSuccess(true); // Set the success message state to true
+        setTimeout(() => {
+          setShowSubmitModal(false);
+          setSelectedTask(null); // Reset the selected task after the modal is closed
+          setSubmitSuccess(false); // Reset the success message state after 3 seconds
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error('Error submitting task:', error);
+        setSubmitError(true); // Set the error message state to true
+      });
+  };
+
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString();
   };
 
   return (
     <Container className='allTaskBody'>
       <h6>Tasks Under Batch</h6>
-      <Row xs={1} md={3} className="g-4">
+      <Row xs={1} md={3} className='g-4'>
         {tasks.map((task) => (
           <Col key={task.id}>
             <Card>
@@ -65,19 +107,49 @@ const ViewTasks = ({ fullName, userId }) => {
                   <strong>Created On:</strong> {formatDate(task.startingDate)}<br />
                   <strong>Deadline:</strong> {formatDate(task.deadline)}<br />
                 </Card.Text>
-                <Button className='taskSubmitButton' variant="success" size="sm">Submit Task</Button>
-                <Button variant="primary" size="sm" onClick={() => handleViewSubmission(task.id)}>
-                  View Submission
-                </Button>
-                {/* You can add the "Submit Task" button here */}
+                {role !=='Admin' &&(
+                <Button className='taskSubmitButton' variant='success' size='sm' onClick={() => handleTaskSubmission(task.id)}>Submit Task</Button>
+                )}
+                {role !== 'Trainee' && (
+                  <Button variant='primary' size='sm' onClick={() => handleViewSubmission(task.id)}>View Submission</Button>
+                )}
               </Card.Body>
             </Card>
           </Col>
         ))}
       </Row>
 
-      {/* Modal for displaying submissions */}
-      <Modal show={showModal} onHide={handleCloseModal}>
+      {/* Modal for submitting the task */}
+      <Modal show={showSubmitModal} onHide={handleCloseSubmitModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Submit Task</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {submitError && (
+            <Alert variant='danger'>Error submitting task. Please try again later.</Alert>
+          )}
+          <Form onSubmit={handleTaskSubmit}>
+            <Form.Group controlId='traineeName'>
+              <Form.Label>Trainee Name</Form.Label>
+              <Form.Control type='text' value={fullName} disabled />
+            </Form.Group>
+            <Form.Group controlId='date'>
+              <Form.Label>Date</Form.Label>
+              <Form.Control type='date' onChange={(e) => setSelectedTask({ ...selectedTask, date: e.target.value })} required />
+            </Form.Group>
+            <Form.Group controlId='filename'>
+              <Form.Label>File Name</Form.Label>
+              <Form.Control type='text' onChange={(e) => setSelectedTask({ ...selectedTask, filename: e.target.value })} required />
+            </Form.Group>
+            
+            <Button type='submit'>Submit Task</Button>
+          
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal for displaying task submissions */}
+      <Modal show={showViewModal} onHide={handleCloseViewModal}>
         <Modal.Header closeButton>
           <Modal.Title>Task Submissions</Modal.Title>
         </Modal.Header>
@@ -104,7 +176,7 @@ const ViewTasks = ({ fullName, userId }) => {
           </Table>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant='secondary' onClick={handleCloseViewModal}>
             Close
           </Button>
         </Modal.Footer>

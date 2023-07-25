@@ -4,7 +4,7 @@ import axios from 'axios';
 import { HashLink } from 'react-router-hash-link';
 import './AllBatch.css'
 
-const AllBatch = () => {
+const AllBatch = ({ traineeId, role }) => {
   const [batches, setBatches] = useState([]);
 
   useEffect(() => {
@@ -23,13 +23,14 @@ const AllBatch = () => {
     return date.toLocaleDateString(); // Change the format as needed
   };
 
+  const filteredBatches = role === 'Trainee' ? batches.filter((batch) => batch.trainees && batch.trainees.some((trainee) => trainee.id === parseInt(traineeId))) : batches;
+
   return (
     <>
-      
       <Container>
-      <h5 className='allBatchTitle pt-3 pt-4'>Batch Details</h5>
+        <h5 className='allBatchTitle pt-3 pt-4'>Batch Details</h5>
         <Row xs={1} md={3} className="g-4 p-5">
-          {batches.map((batch) => (
+          {filteredBatches.map((batch) => (
             <Col key={batch.id}>
               <Card className='allBatchCard' style={{ width: '19rem' }}>
                 {/* Use batch.imageLink for the Card.Img component */}

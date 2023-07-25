@@ -51,6 +51,10 @@ const Trainer = () => {
             // Handle error if registration fails
           });
       };
+      const formatJoiningDate = (timestamp) => {
+        const date = new Date(timestamp);
+        return date.toDateString();
+      };
     return (
         <div className='trainerCreate'>
               <Toast
